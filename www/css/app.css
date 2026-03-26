@@ -952,7 +952,37 @@ textarea.form-control {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    min-height: 100dvh;
     padding: var(--space-lg);
+    background: var(--bg-primary);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow-y: auto !important; /* Allow the card to scroll if it's too tall */
+    -webkit-overflow-scrolling: touch;
+    z-index: 5000;
+}
+
+/* Prevent body scroll when auth is open */
+body:has(.auth-container) {
+    overflow: hidden !important;
+    height: 100dvh;
+    position: fixed;
+    width: 100%;
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        padding: var(--space-md);
+        align-items: center; /* Force perfect centering again */
+    }
+    .auth-card {
+        padding: var(--space-xl) var(--space-md) !important;
+        margin: var(--space-lg) 0 !important; /* Minimal margin to avoid sticking to edges */
+        max-width: 100%;
+    }
 }
 
 .auth-card {
@@ -1486,6 +1516,35 @@ textarea.form-control {
         display: none !important;
     }
 
+    .navbar-public {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        bottom: auto !important;
+        height: 70px !important;
+        padding: 0 var(--space-md) !important;
+        background: transparent !important; /* Transparent for hero integration */
+        border-top: none !important;
+        border-bottom: none !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        z-index: 100 !important;
+        box-shadow: none !important;
+    }
+
+    .navbar-public .navbar-brand {
+        display: flex !important;
+        font-size: 1.1rem !important;
+    }
+
+    .navbar-public .brand-icon {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 0.9rem !important;
+    }
+
     .mobile-brand-header .navbar-brand {
         display: flex !important;
     }
@@ -1869,12 +1928,23 @@ textarea.form-control {
     }
 
 
+    .landing-hero {
+        padding: var(--space-xl) 0 40px 0 !important;
+    }
+
     .landing-hero h1 {
         font-size: 1.8rem;
+        margin-bottom: 8px;
+    }
+
+    .landing-hero p {
+        font-size: 0.95rem;
+        margin-bottom: var(--space-lg);
     }
 
     .hero-buttons {
         flex-direction: column;
+        gap: var(--space-sm) !important;
     }
 
     .navbar-brand span {
@@ -1967,4 +2037,15 @@ textarea.form-control {
 
 .hidden {
     display: none !important;
+}
+
+/* ---------- Simple Smooth Fade Navigation ---------- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.view-fade-in {
+    animation: fadeIn 0.25s ease-in-out both;
+    will-change: opacity;
 }

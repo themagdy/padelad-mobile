@@ -1,5 +1,5 @@
 /**
- * PadelAD - Authentication Module
+ * Padeladd - Authentication Module
  */
 const Auth = {
     /**
@@ -12,7 +12,7 @@ const Auth = {
                     <button class="auth-back-btn" onclick="App.navigate('welcome')" title="Back to home">← Back</button>
                     <div class="auth-logo">
                         <div class="brand-icon" style="cursor:pointer" onclick="App.navigate('welcome')">🏸</div>
-                        <h1>PadelAD</h1>
+                        <h1>Padeladd</h1>
                         <p>Sign in to your account</p>
                     </div>
                     <form id="login-form">
@@ -46,7 +46,7 @@ const Auth = {
                     <button class="auth-back-btn" onclick="App.navigate('welcome')" title="Back to home">← Back</button>
                     <div class="auth-logo">
                         <div class="brand-icon" style="cursor:pointer" onclick="App.navigate('welcome')">🏸</div>
-                        <h1>PadelAD</h1>
+                        <h1>Padeladd</h1>
                         <p>Create your player account</p>
                     </div>
                     <form id="register-form">
@@ -104,6 +104,12 @@ const Auth = {
                 $btn.prop('disabled', false).text('Sign In');
             });
         });
+        // Click outside to close
+        $('.auth-container').on('mousedown', function (e) {
+            if (e.target === this) {
+                App.navigate('welcome');
+            }
+        });
     },
 
     /**
@@ -136,6 +142,12 @@ const Auth = {
                 Utils.toast(msg, 'error');
                 $btn.prop('disabled', false).text('Create Account');
             });
+        });
+        // Click outside to close
+        $('.auth-container').on('mousedown', function (e) {
+            if (e.target === this) {
+                App.navigate('welcome');
+            }
         });
     },
 

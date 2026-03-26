@@ -1,11 +1,11 @@
 /**
- * PadelAD - Utility Functions
+ * Padeladd - Utility Functions
  */
 const Utils = {
     /**
      * API base URL
      */
-    API_BASE: 'api',
+    API_BASE: 'https://ahmedmagdy.com/padeladd/api',
 
     /**
      * Make AJAX request to API

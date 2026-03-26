@@ -1,7 +1,7 @@
 {
   "name": "padelad-mobile",
   "version": "1.0.0",
-  "description": "PadelAD Mobile App",
+  "description": "Padeladd Mobile App",
   "main": "index.html",
   "scripts": {
     "build": "echo 'Building...'",

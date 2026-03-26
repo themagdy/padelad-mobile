@@ -1,5 +1,5 @@
 /**
- * PadelAD - Leaderboard Module
+ * Padeladd - Leaderboard Module
  */
 const Leaderboard = {
     currentPage: 1,

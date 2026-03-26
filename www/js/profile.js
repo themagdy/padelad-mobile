@@ -1,5 +1,5 @@
 /**
- * PadelAD - Profile Module
+ * Padeladd - Profile Module
  */
 const Profile = {
     /**

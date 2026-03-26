@@ -1,5 +1,5 @@
 /**
- * PadelAD - Main App (SPA Router & Core)
+ * Padeladd - Main App (SPA Router & Core)
  */
 const App = {
     currentUser: null,
@@ -93,7 +93,7 @@ const App = {
             <div class="mobile-brand-header d-md-none">
                 <div class="navbar-brand" onclick="App.navigate('dashboard')">
                     <div class="brand-icon">🏸</div>
-                    <span>PadelAD</span>
+                    <span>Padeladd</span>
                 </div>
                 <!-- Logout on Mobile Top Right -->
                 <button class="btn-logout-mobile" onclick="Auth.logout()">🚪 Logout</button>
@@ -102,7 +102,7 @@ const App = {
             <nav class="navbar">
                 <div class="navbar-brand d-none d-md-flex" onclick="App.navigate('dashboard')">
                     <div class="brand-icon">🏸</div>
-                    <span>PadelAD</span>
+                    <span>Padeladd</span>
                 </div>
                 
                 <ul class="navbar-nav" id="main-nav">
@@ -145,10 +145,10 @@ const App = {
         }
 
         $('#navbar-container').html(`
-            <nav class="navbar">
+            <nav class="navbar navbar-public">
                 <div class="navbar-brand" onclick="App.navigate('welcome')">
                     <div class="brand-icon">🏸</div>
-                    <span>PadelAD</span>
+                    <span>Padeladd</span>
                 </div>
                 <div class="d-flex gap-sm">
                     <button class="btn btn-ghost" onclick="App.navigate('login')">Sign In</button>
@@ -163,6 +163,12 @@ const App = {
      */
     renderView(route, param) {
         const $view = $('#view-container');
+        
+        // Simple Smooth Fade Transition
+        $view.removeClass('view-fade-in').css('opacity', 0);
+        setTimeout(() => {
+            $view.css('opacity', 1).addClass('view-fade-in');
+        }, 10);
 
         switch (route) {
             // ===== Public Routes =====
@@ -265,7 +271,7 @@ const App = {
                 <div class="landing-hero">
                     <h1>Compete. Rank Up.<br>Dominate the Court.</h1>
                     <p>
-                        PadelAD is the ultimate padel ranking platform. Create matches, challenge opponents, 
+                        Padeladd is the ultimate padel ranking platform. Create matches, challenge opponents, 
                         and climb the leaderboard. Fair play, competitive spirit, real rankings.
                     </p>
                     <div class="hero-buttons">
