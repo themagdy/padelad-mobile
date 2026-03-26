@@ -16,6 +16,9 @@ const Utils = {
             method: method,
             dataType: 'json',
             contentType: 'application/json',
+            xhrFields: {
+                withCredentials: true
+            }
         };
 
         if (data && method !== 'GET') {
@@ -37,8 +40,12 @@ const Utils = {
                 if (xhr.responseText) {
                     const resp = JSON.parse(xhr.responseText);
                     msg = resp.message || msg;
+                } else {
+                    msg = `Server Error (${xhr.status}: ${xhr.statusText})`;
                 }
-            } catch (e) { }
+            } catch (e) {
+                msg = `Network or Parsing Error (${xhr.status}: ${xhr.statusText})`;
+            }
 
             if (xhr.status === 401) {
                 App.currentUser = null;
