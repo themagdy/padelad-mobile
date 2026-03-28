@@ -1,0 +1,9 @@
+{
+	"appId": "com.padelad.app",
+	"appName": "Padeladd",
+	"webDir": "www",
+	"server": {
+		"hostname": "padelad.com",
+		"androidScheme": "https"
+	}
+}

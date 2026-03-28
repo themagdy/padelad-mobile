@@ -1,5 +1,5 @@
 node_modules/
-android/
+# android/ (Removed from ignore to allow GitHub builds)
 ios/
 .DS_Store
 *.log
