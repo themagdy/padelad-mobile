@@ -24,6 +24,13 @@ const Auth = {
                             <label for="login-password">Password</label>
                             <input type="password" class="form-control" id="login-password" placeholder="Enter your password" required>
                         </div>
+                        <div class="auth-optional">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" id="remember-me">
+                                <span class="checkmark"></span>
+                                <span class="label-text">Remember me</span>
+                            </label>
+                        </div>
                         <button type="submit" class="btn btn-primary btn-block btn-lg" id="login-btn">
                             Sign In
                         </button>
@@ -82,15 +89,33 @@ const Auth = {
      * Bind login form events
      */
     bindLogin() {
+        // Check for remembered email
+        const savedEmail = localStorage.getItem('remember_email');
+        if (savedEmail) {
+            $('#login-email').val(savedEmail);
+            $('#remember-me').prop('checked', true);
+        }
+
         $('#login-form').on('submit', function (e) {
             e.preventDefault();
+            const email = $('#login-email').val().trim();
+            const password = $('#login-password').val();
+            const remember = $('#remember-me').is(':checked');
+
             const $btn = $('#login-btn');
             $btn.prop('disabled', true).html('<span class="spinner"></span> Signing in...');
 
             Utils.api('auth/login.php', 'POST', {
-                email: $('#login-email').val().trim(),
-                password: $('#login-password').val()
+                email: email,
+                password: password
             }).then(function (resp) {
+                // Remember me logic
+                if (remember) {
+                    localStorage.setItem('remember_email', email);
+                } else {
+                    localStorage.removeItem('remember_email');
+                }
+
                 App.currentUser = resp.data;
                 Utils.toast('Welcome back, ' + resp.data.name + '!', 'success');
 

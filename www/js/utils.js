@@ -8,6 +8,11 @@ const Utils = {
     API_BASE: 'https://ahmedmagdy.com/padeladd/api',
 
     /**
+     * Assets/Uploads base URL
+     */
+    ASSETS_BASE: 'https://ahmedmagdy.com/padeladd/uploads',
+
+    /**
      * Make AJAX request to API
      */
     api(endpoint, method = 'GET', data = null) {
@@ -194,7 +199,7 @@ const Utils = {
      */
     avatar(profileImage, size = 40, name = '', gender = '') {
         if (profileImage) {
-            return `<img src="uploads/${profileImage}" alt="${this.escape(name)}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;">`;
+            return `<img src="${this.ASSETS_BASE}/${profileImage}" alt="${this.escape(name)}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;">`;
         }
 
         let bg = 'var(--bg-secondary)';
@@ -210,7 +215,7 @@ const Utils = {
             icon = name ? name.charAt(0).toUpperCase() : '👤';
         }
 
-        return `<span style="width:${size}px;height:${size}px;border-radius:50%;background:${bg};border:1px solid rgba(255,255,255,0.05);display:inline-flex;align-items:center;justify-content:center;font-size:${size * 0.35}px;font-weight:bold">${icon}</span>`;
+        return `<span style="width:${size}px;height:${size}px;border-radius:50%;background:${bg};border:1px solid rgba(255,255,255,0.05);display:inline-flex;align-items:center;justify-content:center;font-size:${size * 0.55}px;font-weight:bold">${icon}</span>`;
     },
 
     /**

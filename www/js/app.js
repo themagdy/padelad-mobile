@@ -15,6 +15,23 @@ const App = {
         Auth.checkSession().then(function (user) {
             self.currentUser = user;
 
+            // Initialize Push
+            Push.init();
+
+            // Mobile Back Button Handling
+            if (window.cordova) {
+                document.addEventListener("backbutton", function (e) {
+                    const dashboardRoutes = ['dashboard', 'welcome'];
+                    if (dashboardRoutes.includes(self.currentRoute)) {
+                        // On home screen, let the default behavior (or exit) happen
+                        // Or show a toast saying "Press again to exit"
+                    } else {
+                        e.preventDefault();
+                        window.history.back();
+                    }
+                }, false);
+            }
+
             // Listen for hash changes
             $(window).on('hashchange', function () {
                 self.handleRoute();
