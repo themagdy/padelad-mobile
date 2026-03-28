@@ -1,20 +1,19 @@
 /**
  * Padeladd - Push Notification Module
- * Handles device registration and notification reception
+ * Handles device registration and notification reception via Capacitor
  */
 const Push = {
     /**
      * Initialize push notifications
      */
     init() {
-        if (!window.cordova) {
-            console.log('Push: Not running in Cordova environment, skipping setup.');
+        if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
+            console.log('Push: Not running on a native platform, skipping setup.');
             return;
         }
 
-        // Check if plugin exists
-        if (!window.FirebaseMessaging) {
-            console.error('Push: FirebaseMessaging plugin not found.');
+        if (!window.Capacitor.Plugins.PushNotifications) {
+            console.error('Push: Capacitor PushNotifications plugin not found.');
             return;
         }
 
@@ -26,32 +25,27 @@ const Push = {
      * Request permissions and get token
      */
     async setupPermissions() {
+        const PushNotifications = window.Capacitor.Plugins.PushNotifications;
         try {
             // Check for notifications permission
-            let permission = await FirebaseMessaging.requestPermission();
-            console.log('Push: Permission granted:', permission);
+            let permStatus = await PushNotifications.checkPermissions();
 
-            if (permission === 'granted') {
-                this.refreshToken();
+            if (permStatus.receive === 'prompt') {
+                permStatus = await PushNotifications.requestPermissions();
             }
+
+            if (permStatus.receive !== 'granted') {
+                console.error('Push: User denied permission!');
+                return;
+            }
+
+            console.log('Push: Permission granted');
+            
+            // Register with Apple / Google to receive push via APNS/FCM
+            PushNotifications.register();
+
         } catch (err) {
             console.error('Push: Error requesting permission:', err);
-        }
-    },
-
-    /**
-     * Get and save the registration token
-     */
-    async refreshToken() {
-        try {
-            const token = await FirebaseMessaging.getToken();
-            console.log('Push: Device token obtained:', token);
-            
-            if (token && App.currentUser) {
-                this.saveToken(token);
-            }
-        } catch (err) {
-            console.error('Push: Error getting token:', err);
         }
     },
 
@@ -68,29 +62,41 @@ const Push = {
      * Listen for incoming notifications
      */
     setupListeners() {
-        // Foreground notification
-        FirebaseMessaging.onMessage((payload) => {
-            console.log('Push: Foreground message received:', payload);
-            
-            // Show as in-app toast if it's not a silence notification
-            if (payload.notification) {
-                Utils.toast(`${payload.notification.title}: ${payload.notification.body}`, 'info');
-            }
-        });
+        const PushNotifications = window.Capacitor.Plugins.PushNotifications;
 
-        // Background notification clicked
-        FirebaseMessaging.onBackgroundMessage((payload) => {
-            console.log('Push: Background message click:', payload);
-            this.handleNavigation(payload.data);
-        });
-
-        // Token refreshed by Firebase
-        FirebaseMessaging.onTokenRefresh((token) => {
-            console.log('Push: Token refreshed by Firebase:', token);
-            if (App.currentUser) {
-                this.saveToken(token);
+        // On success, we should be able to receive notifications
+        PushNotifications.addListener('registration',
+            (token) => {
+                console.log('Push: Device token obtained: ' + token.value);
+                if (App.currentUser) {
+                    this.saveToken(token.value);
+                }
             }
-        });
+        );
+
+        // Some issue with our setup and push will not work
+        PushNotifications.addListener('registrationError',
+            (error) => {
+                console.error('Push: Error on registration: ' + JSON.stringify(error));
+            }
+        );
+
+        // Show us the notification payload if the app is open on our device
+        PushNotifications.addListener('pushNotificationReceived',
+            (notification) => {
+                console.log('Push: Foreground message received: ', notification);
+                Utils.toast(`${notification.title}: ${notification.body}`, 'info');
+            }
+        );
+
+        // Method called when tapping on a notification
+        PushNotifications.addListener('pushNotificationActionPerformed',
+            (notification) => {
+                console.log('Push: Background message click:', notification);
+                const data = notification.notification.data;
+                this.handleNavigation(data);
+            }
+        );
     },
 
     /**
