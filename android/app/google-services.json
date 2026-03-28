@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "364139758704",
+    "project_id": "padeladd1",
+    "storage_bucket": "padeladd1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:364139758704:android:9fb18653c3d230966620b5",
+        "android_client_info": {
+          "package_name": "com.padelad1.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfbKTEzv4gN-V5Q9pRcNja2CGW-P8gEIU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:364139758704:android:e2851beac34272206620b5",
+        "android_client_info": {
+          "package_name": "com.padeladd.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfbKTEzv4gN-V5Q9pRcNja2CGW-P8gEIU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
