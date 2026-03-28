@@ -1,4 +1,4 @@
-package com.padelad.app;
+package com.padeladd.app;
 
 import com.getcapacitor.BridgeActivity;
 
