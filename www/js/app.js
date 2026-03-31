@@ -374,6 +374,10 @@ const App = {
                         <p>Track your rank, wins, and points in real-time. Climb to the top and prove you're the best.</p>
                     </div>
                 </div>
+
+                <div class="app-version text-center mt-lg" style="color:var(--text-muted);font-size:0.75rem;opacity:0.6;margin-top:30px;margin-bottom:20px;">
+                    Build: v1.0.4 (BackBtn Fix)
+                </div>
             </div>
         `;
     },
@@ -433,6 +437,10 @@ const App = {
                     <div id="dashboard-recent-matches">
                         ${Utils.loader('Loading...')}
                     </div>
+                </div>
+
+                <div class="app-version text-center mt-lg" style="color:var(--text-muted);font-size:0.75rem;opacity:0.6;margin-top:30px;">
+                    Build: v1.0.4 (BackBtn Fix)
                 </div>
             </div>
         `;
