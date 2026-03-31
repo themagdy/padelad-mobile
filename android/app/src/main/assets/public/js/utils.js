@@ -5,12 +5,9 @@ const Utils = {
     /**
      * API base URL
      */
-    API_BASE: 'https://ahmedmagdy.com/padeladd/api',
-
-    /**
-     * Assets/Uploads base URL
-     */
-    ASSETS_BASE: 'https://ahmedmagdy.com/padeladd/uploads',
+    API_BASE: (window.location.protocol === 'file:' || window.cordova || window.Capacitor) 
+        ? 'https://ahmedmagdy.com/padeladd/api' 
+        : 'api',
 
     /**
      * Make AJAX request to API
@@ -41,21 +38,24 @@ const Utils = {
             }
 
             let msg = 'Something went wrong';
+            if (xhr.status === 0) {
+                msg = 'Connection error. Check your internet connection or API domain.';
+            } else if (xhr.status === 404) {
+                msg = 'API not found (404). Check API endpoint URL.';
+            } else if (xhr.status === 401) {
+                App.currentUser = null;
+                App.navigate('login');
+                msg = 'Session expired. Please log in again.';
+            } else if (xhr.status >= 500) {
+                msg = 'Server error (' + xhr.status + '). Please try again later.';
+            }
+
             try {
                 if (xhr.responseText) {
                     const resp = JSON.parse(xhr.responseText);
                     msg = resp.message || msg;
-                } else {
-                    msg = `Server Error (${xhr.status}: ${xhr.statusText})`;
                 }
-            } catch (e) {
-                msg = `Network or Parsing Error (${xhr.status}: ${xhr.statusText})`;
-            }
-
-            if (xhr.status === 401) {
-                App.currentUser = null;
-                App.navigate('login');
-            }
+            } catch (e) { }
 
             return $.Deferred().reject(msg).promise();
         });
@@ -199,7 +199,7 @@ const Utils = {
      */
     avatar(profileImage, size = 40, name = '', gender = '') {
         if (profileImage) {
-            return `<img src="${this.ASSETS_BASE}/${profileImage}" alt="${this.escape(name)}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;">`;
+            return `<img src="uploads/${profileImage}" alt="${this.escape(name)}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;">`;
         }
 
         let bg = 'var(--bg-secondary)';

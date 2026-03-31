@@ -11,35 +11,91 @@ const App = {
     init() {
         const self = this;
 
+        // Setup native back button handling immediately (works even if login fails)
+        self.setupBackButton();
+
+        // Listen for hash changes
+        $(window).on('hashchange', function () {
+            self.handleRoute();
+        });
+
         // Check session first
         Auth.checkSession().then(function (user) {
             self.currentUser = user;
 
-            // Initialize Push
+            // Initialize Push (only affects mobile)
             Push.init();
-
-            // Mobile Back Button Handling
-            if (window.cordova) {
-                document.addEventListener("backbutton", function (e) {
-                    const dashboardRoutes = ['dashboard', 'welcome'];
-                    if (dashboardRoutes.includes(self.currentRoute)) {
-                        // On home screen, let the default behavior (or exit) happen
-                        // Or show a toast saying "Press again to exit"
-                    } else {
-                        e.preventDefault();
-                        window.history.back();
-                    }
-                }, false);
-            }
-
-            // Listen for hash changes
-            $(window).on('hashchange', function () {
-                self.handleRoute();
-            });
 
             // Initial route
             self.handleRoute();
+        }).catch(function() {
+            // Even if session check fails (network error / not logged in), trigger routing
+            self.handleRoute();
         });
+    },
+
+    /**
+     * Setup native back button handling for mobile (Cordova/Capacitor)
+     */
+    setupBackButton() {
+        const self = this;
+        const rootRoutes = ['dashboard', 'welcome'];
+        const authRoutes = ['login', 'register'];
+
+        const handleBack = () => {
+            // 1. Close Modal if open
+            if ($('#app-modal').length) {
+                Utils.closeModal();
+                return true; // handled
+            }
+
+            // 2. Close mobile menu if open
+            if ($('#main-nav').hasClass('show')) {
+                $('#main-nav').removeClass('show');
+                return true; // handled
+            }
+
+            // 3. Handle navigation back
+            if (authRoutes.includes(self.currentRoute)) {
+                // If on login/register, go back to landing page
+                self.navigate('welcome');
+                return true; // handled
+            } else if (!rootRoutes.includes(self.currentRoute)) {
+                // Not a root route, go back in history
+                window.history.back();
+                return true; // handled
+            } else {
+                // Root route: exit app
+                return false; // not handled
+            }
+        };
+
+        // If Capacitor App plugin is available, use the official bridge
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+            window.Capacitor.Plugins.App.addListener('backButton', () => {
+                const wasHandled = handleBack();
+                if (!wasHandled) {
+                    window.Capacitor.Plugins.App.exitApp();
+                }
+            });
+            return;
+        }
+
+        // Fallback for Cordova or Older setups
+        const attachListener = () => {
+            document.addEventListener('backbutton', function (e) {
+                const wasHandled = handleBack();
+                if (wasHandled) {
+                    e.preventDefault();
+                }
+            }, false);
+        };
+
+        if (window.cordova) {
+            attachListener();
+        } else {
+            document.addEventListener('deviceready', attachListener, false);
+        }
     },
 
     /**

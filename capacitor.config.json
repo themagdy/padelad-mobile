@@ -4,7 +4,7 @@
   "webDir": "www",
 
   "server": {
-    "hostname": "padelad.com",
+    "hostname": "padeladd.com",
     "androidScheme": "https"
   }
 }
