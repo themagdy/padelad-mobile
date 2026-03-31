@@ -119,11 +119,6 @@ const Auth = {
                 App.currentUser = resp.data;
                 Utils.toast('Welcome back, ' + resp.data.name + '!', 'success');
 
-                if (typeof Push !== 'undefined') {
-                    // Re-register push now that we have a user
-                    Push.init();
-                }
-
                 if (!resp.data.profile_completed) {
                     App.navigate('complete-profile');
                 } else {
@@ -167,12 +162,6 @@ const Auth = {
             }).then(function (resp) {
                 App.currentUser = resp.data;
                 Utils.toast('Account created! Let\'s complete your profile.', 'success');
-                
-                if (typeof Push !== 'undefined') {
-                    // Register push for the new user
-                    Push.init();
-                }
-
                 App.navigate('complete-profile');
             }).catch(function (msg) {
                 Utils.toast(msg, 'error');

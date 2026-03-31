@@ -15,22 +15,11 @@ const App = {
         Auth.checkSession().then(function (user) {
             self.currentUser = user;
 
-            // Initialize Push
+            // Initialize Push (only affects mobile)
             Push.init();
 
-            // Mobile Back Button Handling
-            if (window.cordova) {
-                document.addEventListener("backbutton", function (e) {
-                    const dashboardRoutes = ['dashboard', 'welcome'];
-                    if (dashboardRoutes.includes(self.currentRoute)) {
-                        // On home screen, let the default behavior (or exit) happen
-                        // Or show a toast saying "Press again to exit"
-                    } else {
-                        e.preventDefault();
-                        window.history.back();
-                    }
-                }, false);
-            }
+            // Setup native back button handling
+            self.setupBackButton();
 
             // Listen for hash changes
             $(window).on('hashchange', function () {
@@ -40,6 +29,52 @@ const App = {
             // Initial route
             self.handleRoute();
         });
+    },
+
+    /**
+     * Setup native back button handling for mobile (Cordova/Capacitor)
+     */
+    setupBackButton() {
+        const self = this;
+        const handleBack = () => {
+            // 1. Close Modal if open
+            if ($('#app-modal').length) {
+                Utils.closeModal();
+                return;
+            }
+
+            // 2. Close mobile menu if open
+            if ($('#main-nav').hasClass('show')) {
+                $('#main-nav').removeClass('show');
+                return;
+            }
+
+            // 3. Handle navigation back
+            const rootRoutes = ['dashboard', 'welcome'];
+            if (!rootRoutes.includes(self.currentRoute)) {
+                window.history.back();
+            } else {
+                // For root routes, we don't call preventDefault or history.back
+                // This allows the OS to handle the back button (usually exits app)
+                return true; // signal that we didn't handle it
+            }
+        };
+
+        // Standard Cordova/Capacitor backbutton listener
+        const attachListener = () => {
+            document.addEventListener('backbutton', function (e) {
+                const result = handleBack();
+                if (result !== true) {
+                    e.preventDefault();
+                }
+            }, false);
+        };
+
+        if (window.cordova) {
+            attachListener();
+        } else {
+            document.addEventListener('deviceready', attachListener, false);
+        }
     },
 
     /**
