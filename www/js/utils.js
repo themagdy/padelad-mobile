@@ -36,17 +36,24 @@ const Utils = {
             }
 
             let msg = 'Something went wrong';
+            if (xhr.status === 0) {
+                msg = 'Connection error. Check your internet connection or API domain.';
+            } else if (xhr.status === 404) {
+                msg = 'API not found (404). Check API endpoint URL.';
+            } else if (xhr.status === 401) {
+                App.currentUser = null;
+                App.navigate('login');
+                msg = 'Session expired. Please log in again.';
+            } else if (xhr.status >= 500) {
+                msg = 'Server error (' + xhr.status + '). Please try again later.';
+            }
+
             try {
                 if (xhr.responseText) {
                     const resp = JSON.parse(xhr.responseText);
                     msg = resp.message || msg;
                 }
             } catch (e) { }
-
-            if (xhr.status === 401) {
-                App.currentUser = null;
-                App.navigate('login');
-            }
 
             return $.Deferred().reject(msg).promise();
         });

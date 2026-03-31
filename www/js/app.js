@@ -11,6 +11,14 @@ const App = {
     init() {
         const self = this;
 
+        // Setup native back button handling immediately (works even if login fails)
+        self.setupBackButton();
+
+        // Listen for hash changes
+        $(window).on('hashchange', function () {
+            self.handleRoute();
+        });
+
         // Check session first
         Auth.checkSession().then(function (user) {
             self.currentUser = user;
@@ -18,15 +26,10 @@ const App = {
             // Initialize Push (only affects mobile)
             Push.init();
 
-            // Setup native back button handling
-            self.setupBackButton();
-
-            // Listen for hash changes
-            $(window).on('hashchange', function () {
-                self.handleRoute();
-            });
-
             // Initial route
+            self.handleRoute();
+        }).catch(function() {
+            // Even if session check fails (network error / not logged in), trigger routing
             self.handleRoute();
         });
     },
