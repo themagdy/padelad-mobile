@@ -5,7 +5,7 @@ const Utils = {
     /**
      * API base URL
      */
-    API_BASE: (window.location.protocol === 'file:' || window.cordova || window.Capacitor) 
+    API_BASE: (window.location.protocol === 'file:' || window.cordova || window.Capacitor || window.location.pathname.includes('/mobile_app/www')) 
         ? 'https://ahmedmagdy.com/padeladd/api' 
         : 'api',
 
