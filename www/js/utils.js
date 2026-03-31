@@ -5,7 +5,9 @@ const Utils = {
     /**
      * API base URL
      */
-    API_BASE: 'api',
+    API_BASE: (window.location.protocol === 'file:' || window.cordova || window.Capacitor) 
+        ? 'https://ahmedmagdy.com/padeladd/api' 
+        : 'api',
 
     /**
      * Make AJAX request to API

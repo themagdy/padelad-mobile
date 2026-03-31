@@ -39,35 +39,53 @@ const App = {
      */
     setupBackButton() {
         const self = this;
+        const rootRoutes = ['dashboard', 'welcome'];
+        const authRoutes = ['login', 'register'];
+
         const handleBack = () => {
             // 1. Close Modal if open
             if ($('#app-modal').length) {
                 Utils.closeModal();
-                return;
+                return true; // handled
             }
 
             // 2. Close mobile menu if open
             if ($('#main-nav').hasClass('show')) {
                 $('#main-nav').removeClass('show');
-                return;
+                return true; // handled
             }
 
             // 3. Handle navigation back
-            const rootRoutes = ['dashboard', 'welcome'];
-            if (!rootRoutes.includes(self.currentRoute)) {
+            if (authRoutes.includes(self.currentRoute)) {
+                // If on login/register, go back to landing page
+                self.navigate('welcome');
+                return true; // handled
+            } else if (!rootRoutes.includes(self.currentRoute)) {
+                // Not a root route, go back in history
                 window.history.back();
+                return true; // handled
             } else {
-                // For root routes, we don't call preventDefault or history.back
-                // This allows the OS to handle the back button (usually exits app)
-                return true; // signal that we didn't handle it
+                // Root route: exit app
+                return false; // not handled
             }
         };
 
-        // Standard Cordova/Capacitor backbutton listener
+        // If Capacitor App plugin is available, use the official bridge
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+            window.Capacitor.Plugins.App.addListener('backButton', () => {
+                const wasHandled = handleBack();
+                if (!wasHandled) {
+                    window.Capacitor.Plugins.App.exitApp();
+                }
+            });
+            return;
+        }
+
+        // Fallback for Cordova or Older setups
         const attachListener = () => {
             document.addEventListener('backbutton', function (e) {
-                const result = handleBack();
-                if (result !== true) {
+                const wasHandled = handleBack();
+                if (wasHandled) {
                     e.preventDefault();
                 }
             }, false);
