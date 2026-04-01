@@ -18,17 +18,17 @@ const Profile = {
                         <form id="complete-profile-form">
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="cp-name">Full Name</label>
+                                    <label for="cp-name">Full Name <span style="color:var(--danger)">*</span></label>
                                     <input type="text" class="form-control" id="cp-name" value="${Utils.escape(user.name)}" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="cp-age">Age</label>
+                                    <label for="cp-age">Age <span style="color:var(--danger)">*</span></label>
                                     <input type="number" class="form-control" id="cp-age" min="5" max="100" placeholder="Your age" required>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="cp-hand">Playing Hand</label>
+                                    <label for="cp-hand">Playing Hand <span style="color:var(--danger)">*</span></label>
                                     <select class="form-control" id="cp-hand" required>
                                         <option value="">Select hand</option>
                                         <option value="right">Right-Handed</option>
@@ -45,12 +45,17 @@ const Profile = {
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="cp-city">City / Location</label>
-                                <input type="text" class="form-control" id="cp-city" placeholder="e.g. Cairo, Dubai, Riyadh" required>
+                                <label for="cp-city">Location <span style="color:var(--danger)">*</span></label>
+                                <select class="form-control" id="cp-city" required>
+                                    <option value="">Select location</option>
+                                    <option value="Cairo">Cairo</option>
+                                    <option value="Giza">Giza</option>
+                                    <option value="Other">Other</option>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label for="cp-phone">Phone (optional)</label>
-                                <input type="text" class="form-control" id="cp-phone" placeholder="Your phone number">
+                                <label for="cp-phone">Phone <span style="color:var(--danger)">*</span></label>
+                                <input type="text" class="form-control" id="cp-phone" placeholder="Your phone number" required>
                             </div>
                             <div class="form-group">
                                 <label for="cp-bio">Short Bio (optional)</label>
@@ -253,18 +258,18 @@ const Profile = {
                 <form id="edit-profile-form">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="ep-name">Full Name</label>
+                            <label for="ep-name">Full Name <span style="color:var(--danger)">*</span></label>
                             <input type="text" class="form-control" id="ep-name" value="${Utils.escape(p.name)}" required>
                         </div>
                         <div class="form-group">
-                            <label for="ep-age">Age</label>
-                            <input type="number" class="form-control" id="ep-age" value="${p.age || ''}" min="5" max="100">
+                            <label for="ep-age">Age <span style="color:var(--danger)">*</span></label>
+                            <input type="number" class="form-control" id="ep-age" value="${p.age || ''}" min="5" max="100" required>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="ep-hand">Playing Hand</label>
-                            <select class="form-control" id="ep-hand">
+                            <label for="ep-hand">Playing Hand <span style="color:var(--danger)">*</span></label>
+                            <select class="form-control" id="ep-hand" required>
                                 <option value="">Select hand</option>
                                 <option value="right" ${p.hand === 'right' ? 'selected' : ''}>Right-Handed</option>
                                 <option value="left" ${p.hand === 'left' ? 'selected' : ''}>Left-Handed</option>
@@ -279,15 +284,20 @@ const Profile = {
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="ep-city">City / Location</label>
-                        <input type="text" class="form-control" id="ep-city" value="${Utils.escape(p.city || '')}">
+                        <label for="ep-city">Location <span style="color:var(--danger)">*</span></label>
+                        <select class="form-control" id="ep-city" required>
+                            <option value="">Select location</option>
+                            <option value="Cairo" ${p.city === 'Cairo' ? 'selected' : ''}>Cairo</option>
+                            <option value="Giza" ${p.city === 'Giza' ? 'selected' : ''}>Giza</option>
+                            <option value="Other" ${p.city === 'Other' ? 'selected' : ''}>Other</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="ep-phone">Phone</label>
-                        <input type="text" class="form-control" id="ep-phone" value="${Utils.escape(p.phone || '')}">
+                        <label for="ep-phone">Phone <span style="color:var(--danger)">*</span></label>
+                        <input type="text" class="form-control" id="ep-phone" value="${Utils.escape(p.phone || '')}" required>
                     </div>
                     <div class="form-group">
-                        <label for="ep-bio">Short Bio</label>
+                        <label for="ep-bio">Short Bio (optional)</label>
                         <textarea class="form-control" id="ep-bio" rows="3">${Utils.escape(p.bio || '')}</textarea>
                     </div>
                     <div class="d-flex gap-sm mt-md">

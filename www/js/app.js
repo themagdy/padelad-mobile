@@ -2,7 +2,6 @@
  * Padeladd - Main App (SPA Router & Core)
  */
 const App = {
-    version: '2',
     currentUser: null,
     currentRoute: null,
 
@@ -169,8 +168,13 @@ const App = {
                     <div class="brand-icon">🏸</div>
                     <span>Padeladd</span>
                 </div>
-                <!-- Logout on Mobile Top Right -->
-                <button class="btn-logout-mobile" onclick="Auth.logout()">🚪 Logout</button>
+                <div class="d-flex align-center gap-sm">
+                    <button class="btn-icon-mobile" onclick="App.navigate('notifications')" style="position:relative;background:none;border:none;font-size:1.3rem;cursor:pointer;padding:4px">
+                        🔔
+                        <span class="notif-badge hidden" id="notif-badge-mobile" style="position:absolute;top:0;right:0;background:var(--danger);color:#fff;font-size:0.65rem;font-weight:700;padding:1px 4px;border-radius:10px;min-width:16px;text-align:center"></span>
+                    </button>
+                    <button class="btn-logout-mobile" onclick="Auth.logout()">🚪 Logout</button>
+                </div>
             </div>
 
             <nav class="navbar">
@@ -192,6 +196,13 @@ const App = {
                             <span>Profile</span>
                         </button>
                     </li>
+                    <li class="d-none d-md-block" style="position:relative">
+                        <button class="nav-link ${isActive('notifications')}" onclick="App.navigate('notifications')">
+                            <span>🔔</span>
+                            <span>Alerts</span>
+                            <span class="notif-badge hidden" id="notif-badge-desktop" style="position:absolute;top:4px;right:4px;background:var(--danger);color:#fff;font-size:0.65rem;font-weight:700;padding:1px 5px;border-radius:10px;min-width:16px;text-align:center"></span>
+                        </button>
+                    </li>
                     <li class="d-none d-md-block"><button class="nav-link text-danger" onclick="Auth.logout()" style="color:var(--danger);font-weight:600"><span>🚪</span> <span>Logout</span></button></li>
                 </ul>
             </nav>
@@ -206,6 +217,9 @@ const App = {
         $('#main-nav .nav-link').on('click', function () {
             $('#main-nav').removeClass('show');
         });
+
+        // Load notification count
+        App.loadNotificationCount();
     },
 
     /**
@@ -309,14 +323,15 @@ const App = {
                 Profile.loadProfile();
                 break;
 
-            case 'player':
-                $view.html(Profile.renderProfile(parseInt(param)));
-                Profile.loadProfile(parseInt(param));
-                break;
-
             case 'edit-profile':
                 $view.html(Profile.renderEditProfile());
                 Profile.loadEditProfile();
+                break;
+
+            case 'notifications':
+                $view.html(Notifications.renderNotifications());
+                Notifications.loadNotifications();
+                Notifications.bindNotifications();
                 break;
 
             default:
@@ -343,6 +358,7 @@ const App = {
         return `
             <div class="main-content">
                 <div class="landing-hero">
+                    <div style="font-size: 1.22rem; font-weight: 700; color: var(--primary); margin-bottom: 16px;">Redefining Padel in Egypt 🇪🇬</div>
                     <h1>Compete. Rank Up.<br>Dominate the Court.</h1>
                     <p>
                         Padeladd is the ultimate padel ranking platform. Create matches, challenge opponents, 
@@ -350,7 +366,7 @@ const App = {
                     </p>
                     <div class="hero-buttons">
                         <button class="btn btn-primary btn-lg" onclick="App.navigate('register')">
-                            🎾 Get Started — It's Free
+                            Get Started! It's Free 🎾
                         </button>
                         <button class="btn btn-secondary btn-lg" onclick="App.navigate('login')">
                             Sign In
@@ -377,7 +393,7 @@ const App = {
                 </div>
 
                 <div class="landing-footer" style="text-align:center; padding: 24px 0; color: var(--text-color); opacity: 0.6; font-size: 0.85rem; margin-top: auto;">
-                    v.${App.version}
+                    V1.2
                 </div>
             </div>
         `;
@@ -487,6 +503,27 @@ const App = {
         }).catch(function () {
             $('#dashboard-recent-matches').html(`<div class="empty-state"><p>Failed to load matches</p></div>`);
         });
+    },
+
+    /**
+     * Load unread notification count and update badge
+     */
+    loadNotificationCount() {
+        Utils.api('notifications/list.php?limit=1').then(function (resp) {
+            App.updateNotificationBadge(resp.data.unread_count || 0);
+        }).catch(function () { /* silent */ });
+    },
+
+    /**
+     * Update the bell badge on all navbar instances
+     */
+    updateNotificationBadge(count) {
+        const $badges = $('#notif-badge-mobile, #notif-badge-desktop');
+        if (count > 0) {
+            $badges.text(count > 99 ? '99+' : count).removeClass('hidden');
+        } else {
+            $badges.addClass('hidden').text('');
+        }
     }
 };
 

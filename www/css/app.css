@@ -1400,7 +1400,6 @@ body:has(.auth-container) {
     align-items: center;
     justify-content: center;
     padding: var(--space-lg);
-    animation: fadeIn 0.2s var(--ease);
 }
 
 .modal {
@@ -1413,7 +1412,6 @@ body:has(.auth-container) {
     overflow-y: auto;
     padding: var(--space-xl);
     box-shadow: var(--shadow-lg);
-    animation: scaleIn 0.2s var(--ease);
 }
 
 .modal-header {
