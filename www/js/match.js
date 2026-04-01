@@ -641,6 +641,12 @@ const Match = {
         </div>`;
 
         Utils.showModal('Join Match', `
+            <style>
+                .modal-backdrop, .modal, .modal * {
+                    animation: none !important;
+                    transition: none !important;
+                }
+            </style>
             ${warning}
             <p style="margin-bottom:12px">How do you want to join?</p>
             <div class="d-flex gap-sm" style="margin-bottom:16px">
