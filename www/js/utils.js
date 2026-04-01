@@ -10,6 +10,13 @@ const Utils = {
         : 'api',
 
     /**
+     * Uploads base URL
+     */
+    UPLOADS_BASE: (window.location.protocol === 'file:' || window.cordova || window.Capacitor || window.location.pathname.includes('/mobile_app/www')) 
+        ? 'https://ahmedmagdy.com/padeladd/uploads' 
+        : 'uploads',
+
+    /**
      * Make AJAX request to API
      */
     api(endpoint, method = 'GET', data = null) {
@@ -71,6 +78,9 @@ const Utils = {
             data: formData,
             processData: false,
             contentType: false,
+            xhrFields: {
+                withCredentials: true
+            },
             dataType: 'json',
         }).then(function (resp) {
             if (resp && resp.success === false) {
@@ -199,7 +209,7 @@ const Utils = {
      */
     avatar(profileImage, size = 40, name = '', gender = '') {
         if (profileImage) {
-            return `<img src="uploads/${profileImage}" alt="${this.escape(name)}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;">`;
+            return `<img src="${this.UPLOADS_BASE}/${profileImage}" alt="${this.escape(name)}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;">`;
         }
 
         let bg = 'var(--bg-secondary)';

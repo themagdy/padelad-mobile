@@ -2,6 +2,7 @@
  * Padeladd - Main App (SPA Router & Core)
  */
 const App = {
+    version: '2',
     currentUser: null,
     currentRoute: null,
 
@@ -182,7 +183,7 @@ const App = {
                     <li><button class="nav-link ${isActive('dashboard')}" onclick="App.navigate('dashboard')"><span>🏠</span> <span>Home</span></button></li>
                     <li><button class="nav-link ${isActive('leaderboard')}" onclick="App.navigate('leaderboard')"><span>🏆</span> <span>Rank</span></button></li>
                     <li><button class="nav-link ${isActive('open-matches')}" onclick="App.navigate('open-matches')"><span>🔥</span> <span>Padel</span></button></li>
-                    <li><button class="nav-link ${isActive('my-matches')}" onclick="App.navigate('my-matches')"><span>📋</span> <span>History</span></button></li>
+                    <li><button class="nav-link ${isActive('my-matches')}" onclick="App.navigate('my-matches')"><span>📋</span> <span>Matches</span></button></li>
                     <li>
                         <button class="nav-link ${isActive('profile')}" id="user-menu-btn" onclick="App.navigate('profile')">
                             <div class="nav-avatar">
@@ -375,8 +376,8 @@ const App = {
                     </div>
                 </div>
 
-                <div class="app-version text-center mt-lg" style="color:var(--text-muted);font-size:0.75rem;opacity:0.6;margin-top:30px;margin-bottom:20px;">
-                    Build: v1.0.4 (BackBtn Fix)
+                <div class="landing-footer" style="text-align:center; padding: 24px 0; color: var(--text-color); opacity: 0.6; font-size: 0.85rem; margin-top: auto;">
+                    v.${App.version}
                 </div>
             </div>
         `;
@@ -431,16 +432,12 @@ const App = {
 
                 <div class="card">
                     <div class="card-header">
-                        <h3>📋 Recent Matches</h3>
+                        <h3>📋 Active Matches</h3>
                         <button class="btn btn-ghost btn-sm" onclick="App.navigate('my-matches')">View All →</button>
                     </div>
                     <div id="dashboard-recent-matches">
                         ${Utils.loader('Loading...')}
                     </div>
-                </div>
-
-                <div class="app-version text-center mt-lg" style="color:var(--text-muted);font-size:0.75rem;opacity:0.6;margin-top:30px;">
-                    Build: v1.0.4 (BackBtn Fix)
                 </div>
             </div>
         `;
@@ -468,20 +465,22 @@ const App = {
             $('#dash-winrate').text(wr);
         });
 
-        // Load recent matches
+        // Load active matches
         Utils.api('match/my_matches.php').then(function (resp) {
-            const matches = resp.data;
-            if (!matches || matches.length === 0) {
+            const allMatches = resp.data || [];
+            const activeMatches = allMatches.filter(m => m.status === 'open' || m.status === 'full');
+
+            if (activeMatches.length === 0) {
                 $('#dashboard-recent-matches').html(`
                     <div class="empty-state" style="padding:24px">
-                        <p>No matches yet. Time to play!</p>
+                        <p>No active matches. Time to play!</p>
                     </div>
                 `);
                 return;
             }
 
             let html = '';
-            matches.slice(0, 5).forEach(m => {
+            activeMatches.slice(0, 5).forEach(m => {
                 html += Match.renderMatchCard(m, false);
             });
             $('#dashboard-recent-matches').html(`<div class="match-list">${html}</div>`);

@@ -9,7 +9,7 @@ const Auth = {
         return `
             <div class="auth-container">
                 <div class="auth-card">
-                    <button class="auth-back-btn" onclick="App.navigate('welcome')" title="Back to home">← Back</button>
+                    <button class="auth-back-btn" onclick="window.history.back()" title="Back">← Back</button>
                     <div class="auth-logo">
                         <div class="brand-icon" style="cursor:pointer" onclick="App.navigate('welcome')">🏸</div>
                         <h1>Padeladd</h1>
@@ -50,7 +50,7 @@ const Auth = {
         return `
             <div class="auth-container">
                 <div class="auth-card">
-                    <button class="auth-back-btn" onclick="App.navigate('welcome')" title="Back to home">← Back</button>
+                    <button class="auth-back-btn" onclick="window.history.back()" title="Back">← Back</button>
                     <div class="auth-logo">
                         <div class="brand-icon" style="cursor:pointer" onclick="App.navigate('welcome')">🏸</div>
                         <h1>Padeladd</h1>

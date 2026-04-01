@@ -36,12 +36,11 @@ const Profile = {
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="cp-gender">Gender</label>
-                                    <select class="form-control" id="cp-gender">
-                                        <option value="">Prefer not to say</option>
+                                    <label for="cp-gender">Gender <span style="color:var(--danger)">*</span></label>
+                                    <select class="form-control" id="cp-gender" required>
+                                        <option value="">Select gender</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
-                                        <option value="other">Other</option>
                                     </select>
                                 </div>
                             </div>
@@ -233,7 +232,7 @@ const Profile = {
                         <h1>Edit Profile</h1>
                         <p>Update your player information</p>
                     </div>
-                    <button class="btn btn-secondary" onclick="App.navigate('profile')">← Back</button>
+                    <button class="btn btn-secondary" onclick="window.history.back()">← Back</button>
                 </div>
                 <div style="max-width:560px;">
                     <div class="card" id="edit-profile-card">
@@ -272,12 +271,10 @@ const Profile = {
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="ep-gender">Gender</label>
-                            <select class="form-control" id="ep-gender">
-                                <option value="">Prefer not to say</option>
+                            <label for="ep-gender">Gender <span style="color:var(--danger)">*</span></label>
+                            <select class="form-control" id="ep-gender" required>
                                 <option value="male" ${p.gender === 'male' ? 'selected' : ''}>Male</option>
                                 <option value="female" ${p.gender === 'female' ? 'selected' : ''}>Female</option>
-                                <option value="other" ${p.gender === 'other' ? 'selected' : ''}>Other</option>
                             </select>
                         </div>
                     </div>
@@ -321,7 +318,12 @@ const Profile = {
             };
 
             const gender = $('#cp-gender').val();
-            if (gender) data.gender = gender;
+            if (!gender) {
+                Utils.toast('Please select your gender', 'error');
+                $btn.prop('disabled', false).html('Complete Profile & Start Playing');
+                return;
+            }
+            data.gender = gender;
 
             const phone = $('#cp-phone').val().trim();
             if (phone) data.phone = phone;

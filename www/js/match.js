@@ -18,7 +18,7 @@ const Match = {
                         <h1>⚡ Create a Match</h1>
                         <p>Set up a new padel match and find opponents</p>
                     </div>
-                    <button class="btn btn-secondary" onclick="App.navigate('dashboard')">← Back</button>
+                    <button class="btn btn-secondary" onclick="window.history.back()">← Back</button>
                 </div>
                 <div style="max-width:560px;">
                     <div class="card">
@@ -465,6 +465,7 @@ const Match = {
                     <button class="tab-btn" data-status="open">Open</button>
                     <button class="tab-btn" data-status="full">In Progress</button>
                     <button class="tab-btn" data-status="completed">Completed</button>
+                    <button class="tab-btn" data-status="cancelled">Cancelled</button>
                 </div>
                 <div class="match-list" id="my-matches-list">
                     ${Utils.loader('Loading matches...')}
@@ -480,12 +481,18 @@ const Match = {
         const endpoint = status ? `match/my_matches.php?status=${status}` : 'match/my_matches.php';
 
         Utils.api(endpoint).then(function (resp) {
-            const matches = resp.data;
-            if (!matches || matches.length === 0) {
+            let matches = resp.data || [];
+            
+            // If "All" tab is selected, filter out cancelled matches
+            if (!status) {
+                matches = matches.filter(m => m.status !== 'cancelled');
+            }
+
+            if (matches.length === 0) {
                 $('#my-matches-list').html(`
                     <div class="empty-state">
                         <div class="empty-icon">📋</div>
-                        <p>No matches found</p>
+                        <p>No ${status || 'active'} matches found</p>
                         <button class="btn btn-primary" onclick="App.navigate('open-matches')">Find a match</button>
                     </div>
                 `);
@@ -832,7 +839,7 @@ const Match = {
                         <h1>Match #${m.id}</h1>
                         <p><span class="match-status status-${m.status}">${m.status}</span> · Created ${Utils.formatDate(m.created_at)}</p>
                     </div>
-                    <button class="btn btn-secondary" onclick="App.navigate('my-matches')">← Back to Matches</button>
+                    <button class="btn btn-secondary" onclick="window.history.back()">← Back</button>
                 </div>
 
                 ${m.court || m.match_time ? `

@@ -4,6 +4,7 @@
 const Leaderboard = {
     currentPage: 1,
     searchQuery: '',
+    currentGender: null,
 
     /**
      * Render leaderboard page
@@ -12,6 +13,11 @@ const Leaderboard = {
         // Clear filter on entry
         this.searchQuery = '';
         this.currentPage = 1;
+
+        // Determine default gender based on user profile
+        if (this.currentGender === null) {
+            this.currentGender = (App.currentUser?.gender === 'female') ? 'female' : 'male';
+        }
 
         const paginationTop = `
             <div class="d-flex justify-between align-center" style="display:none;margin-bottom:16px" data-lb-pagination>
@@ -35,6 +41,10 @@ const Leaderboard = {
                     <p>Top padel players ranked by total points</p>
                 </div>
                 <div class="card" style="margin-bottom:16px;padding:16px;">
+                    <div class="tabs" style="margin-bottom:16px">
+                        <button class="tab-btn ${this.currentGender === 'male' ? 'active' : ''}" data-lb-gender="male">Men's Rank</button>
+                        <button class="tab-btn ${this.currentGender === 'female' ? 'active' : ''}" data-lb-gender="female">Women's Rank</button>
+                    </div>
                     <div class="form-group" style="margin:0;position:relative">
                         <div style="position:relative">
                             <input type="text" class="form-control" id="lb-search" placeholder="🔍 Search players by name..." autocomplete="off" style="padding-left:16px;">
@@ -60,8 +70,9 @@ const Leaderboard = {
     loadLeaderboard(page = 1) {
         this.currentPage = page;
         const searchParam = this.searchQuery ? `&search=${encodeURIComponent(this.searchQuery)}` : '';
+        const genderParam = this.currentGender ? `&gender=${this.currentGender}` : '';
 
-        Utils.api(`leaderboard/get.php?page=${page}&limit=20${searchParam}`).then(function (resp) {
+        Utils.api(`leaderboard/get.php?page=${page}&limit=20${searchParam}${genderParam}`).then(function (resp) {
             const { players, total, pages } = resp.data;
 
             if (!players || players.length === 0) {
@@ -160,5 +171,17 @@ const Leaderboard = {
             self.searchQuery = $(this).val().trim();
             self.loadLeaderboard(1);
         }, 300));
+
+        // Tab switching (Gender)
+        $(document).off('click', '[data-lb-gender]').on('click', '[data-lb-gender]', function () {
+            $('.tabs .tab-btn').removeClass('active');
+            $(this).addClass('active');
+            
+            self.currentGender = $(this).data('lb-gender');
+            $('#lb-search').val('');
+            self.searchQuery = '';
+            
+            self.loadLeaderboard(1);
+        });
     }
 };
