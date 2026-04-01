@@ -277,7 +277,7 @@ const Match = {
                 <div class="card" style="margin-bottom:24px;padding:16px;">
                     <div style="display:grid;grid-template-columns:1fr;gap:16px" id="match-filters">
                         <div class="form-group" style="margin:0;position:relative">
-                            <label style="font-size:0.85rem">Filter by Partner <span style="font-weight:400;color:var(--text-muted)">(optional — for team join ±10 pts check)</span></label>
+                            <label style="font-size:0.85rem;margin-bottom:8px">Join with Partner <span style="font-weight:400;color:var(--text-muted)">(optional)</span><div style="font-size:0.75rem;font-weight:400;color:var(--text-muted);margin-top:2px">Show matches available to join with a partner</div></label>
                             <input type="text" id="filter-partner-search" class="form-control" placeholder="Search partner name or ID...">
                             <div id="filter-partner-results" class="search-results hidden" style="position:absolute;top:100%;left:0;right:0;z-index:100;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;max-height:200px;overflow-y:auto;box-shadow:0 10px 24px rgba(0,0,0,0.5)"></div>
                             <div id="filter-partner-selected" class="hidden" style="margin-top:8px;display:flex;align-items:center;gap:8px;background:var(--bg-card-hover);padding:8px;border-radius:6px;border:1px solid var(--border)">
